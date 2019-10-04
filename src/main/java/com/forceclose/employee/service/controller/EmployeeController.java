@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/employees")
 @RequiredArgsConstructor
 public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @GetMapping("/employees")
+    @GetMapping
     public HttpEntity<List<Employee>> getAll() {
         List<Employee> employees = employeeService.findAll();
         if(employees == null || employees.isEmpty())
@@ -26,7 +26,7 @@ public class EmployeeController {
                 return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
-    @PostMapping("/employees")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee register(@RequestBody Employee employee) {
         return employeeService.register(employee);
