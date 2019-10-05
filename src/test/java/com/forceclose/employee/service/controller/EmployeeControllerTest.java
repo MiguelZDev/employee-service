@@ -65,7 +65,13 @@ class EmployeeControllerTest {
     @Test
     @DisplayName("Test Consulta Empleado - Lista Vacía")
     void getAll_empty() throws Exception {
+        List<Employee> employees = Collections.emptyList();
 
+        when(employeeService.findAll()).thenReturn(employees);
+
+        this.mockMvc.perform(get("/api/employees")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.NO_CONTENT.value()));
     }
 
     @Test
