@@ -1,5 +1,6 @@
 package com.forceclose.employee.service.service;
 
+import com.forceclose.employee.service.exception.BadRequestException;
 import com.forceclose.employee.service.model.Employee;
 import com.forceclose.employee.service.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee register(Employee employee) {
+        if(employee.getFirstName() == null) throw new BadRequestException("firstName required!");
         return employeeRepository.save(employee);
     }
 

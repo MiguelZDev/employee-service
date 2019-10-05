@@ -1,5 +1,6 @@
 package com.forceclose.employee.service.service;
 
+import com.forceclose.employee.service.exception.BadRequestException;
 import com.forceclose.employee.service.model.Employee;
 import com.forceclose.employee.service.repository.EmployeeRepository;
 import org.assertj.core.api.Assertions;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -52,6 +54,12 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void register() {
+    void register_exception400() {
+        Employee employee = new Employee();
+        employee.setEmail("jperez@gmail.com");
+        employee.setLastName("Perez");
+
+        assertThatThrownBy(()-> employeeService.register(employee))
+                .isExactlyInstanceOf(BadRequestException.class);
     }
 }

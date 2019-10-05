@@ -36,7 +36,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public HttpEntity<Employee> findById(@PathVariable(value = "id") Long employeeId) throws ResourceNotFoundException {
+    public HttpEntity<Employee> findById(@PathVariable(value = "id") Long employeeId) {
         Employee employee = employeeService.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
         return ResponseEntity.ok().body(employee);
@@ -45,7 +45,6 @@ public class EmployeeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee register(@RequestBody Employee employee) {
-        if(employee.getFirstName() == null) throw new BadRequestException("firstName required!");
         return employeeService.register(employee);
     }
 

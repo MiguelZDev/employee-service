@@ -1,5 +1,6 @@
 package com.forceclose.employee.service.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.forceclose.employee.service.model.Employee;
 import com.forceclose.employee.service.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,10 +21,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,7 +77,43 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void register() {
+    void findById_ok() throws Exception {
+        Employee employee = new Employee();
+        employee.setEmail("jperez@gmail.com");
+        employee.setFirstName("Juan");
+        employee.setLastName("Perez");
+        employee.setId(1);
+        when(employeeService.findById(Long.valueOf(1))).thenReturn(Optional.of(employee));
+
+        this.mockMvc.perform(get("/api/employees/{id}", 1)
+        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void register_ok() throws Exception {
+        Employee employee = new Employee();
+        employee.setEmail("jperez@gmail.com");
+        employee.setFirstName("Juan");
+        employee.setLastName("Perez");
+        String json = new ObjectMapper().writeValueAsString(employee);
+
+        Employee employeeCreated = new Employee();
+        employeeCreated.setEmail("jperez@gmail.com");
+        employeeCreated.setFirstName("Juan");
+        employeeCreated.setLastName("Perez");
+        employeeCreated.setId(1);
+        when(employeeService.register(employee)).thenReturn(employeeCreated);
+
+        this.mockMvc.perform(post("/api/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.firstName").value("Juan"))
+                .andExpect(jsonPath("$.lastName").value("Perez"))
+                .andExpect(jsonPath("$.email").value("jperez@gmail.com"));
 
     }
 }
